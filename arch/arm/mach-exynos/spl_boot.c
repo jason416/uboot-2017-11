@@ -229,8 +229,10 @@ void copy_uboot_to_ram(void)
 #ifdef CONFIG_SUPPORT_EMMC_BOOT
 	case BOOT_MODE_EMMC:
 		/* Set the FSYS1 clock divisor value for EMMC boot */
+#ifndef CONFIG_ITOP4412
+		/* just for exynos5 can be call */
 		emmc_boot_clk_div_set();
-
+#endif
 		copy_bl2_from_emmc = get_irom_func(EMMC44_INDEX);
 		end_bootop_from_emmc = get_irom_func(EMMC44_END_INDEX);
 

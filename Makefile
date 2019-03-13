@@ -852,9 +852,9 @@ cmd_pad_cat = $(cmd_objcopy) && $(append) || rm -f $@
 
 cfg: u-boot.cfg
 
-quiet_cmd_cfgcheck = CFGCHK  $2
-cmd_cfgcheck = $(srctree)/scripts/check-config.sh $2 \
-		$(srctree)/scripts/config_whitelist.txt $(srctree)
+#quiet_cmd_cfgcheck = CFGCHK  $2
+#cmd_cfgcheck = $(srctree)/scripts/check-config.sh $2 \
+#		$(srctree)/scripts/config_whitelist.txt $(srctree)
 
 all:		$(ALL-y) cfg
 ifeq ($(CONFIG_DM_I2C_COMPAT)$(CONFIG_SANDBOX),y)

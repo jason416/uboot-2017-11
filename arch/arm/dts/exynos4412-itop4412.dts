@@ -11,8 +11,8 @@
 #include "exynos4412.dtsi"
 
 / {
-	model = "Odroid based on Exynos4412";
-	compatible = "samsung,odroid", "samsung,exynos4412";
+	model = "itop-4412 based on Exynos4412";
+	compatible = "samsung,itop-4412", "samsung,exynos4412";
 
 	aliases {
 		i2c0 = "/i2c@13860000";
@@ -23,10 +23,77 @@
 		i2c5 = "/i2c@138b0000";
 		i2c6 = "/i2c@138c0000";
 		i2c7 = "/i2c@138d0000";
-		serial0 = "/serial@13800000";
-		console = "/serial@13810000";
-		mmc0 = &mshc_0;
-		mmc1 = &sdhci2;
+		serial0 = "/serial@13820000";
+		console = "/serial@13820000";
+		mmc2 = "sdhci@12530000";
+		mmc4 = "dwmmc@12550000";
+	};
+
+	fimd@11c00000 {
+		compatible = "samsung,exynos-fimd";
+		reg = <0x11c00000 0xa4>;
+
+		samsung,vl-freq = <60>;
+		samsung,vl-col = <480>;
+		samsung,vl-row = <272>;
+		samsung,vl-width = <480>;
+		samsung,vl-height = <272>;
+
+		samsung,vl-clkp = <0>;
+		samsung,vl-oep = <0>;
+		samsung,vl-hsp = <1>;
+		samsung,vl-vsp = <0>;
+		samsung,vl-dp = <1>;
+		samsung,vl-bpix = <4>;
+
+		samsung,vl-hspw = <32>;
+		samsung,vl-hbpd = <80>;
+		samsung,vl-hfpd = <48>;
+		samsung,vl-vspw = <2>;
+		samsung,vl-vbpd = <1>;
+		samsung,vl-vfpd = <13>;
+		samsung,vl-cmd-allow-len = <0xf>;
+
+		samsung,winid = <0>;
+		samsung,power-on-delay = <30>;
+		samsung,interface-mode = <1>;
+		samsung,mipi-enabled = <0>;
+		//samsung,dp-enabled;
+		//samsung,dual-lcd-enabled;
+
+		samsung,logo-on = <1>;
+		samsung,resolution = <0>;
+		samsung,rgb-mode = <1>;
+		samsung,pwm-out-gpio  = <&gpd0 1 1>;
+		samsung,bl-en-gpio = <&gpd0 0 1>;
+	};
+
+	mipidsi@11c80000 {
+		compatible = "samsung,exynos-mipi-dsi";
+		reg = <0x11c80000 0x5c>;
+
+		samsung,dsim-config-e-interface = <1>;
+		samsung,dsim-config-e-virtual-ch = <0>;
+		samsung,dsim-config-e-pixel-format = <7>;
+		samsung,dsim-config-e-burst-mode = <1>;
+		samsung,dsim-config-e-no-data-lane = <3>;
+		samsung,dsim-config-e-byte-clk = <0>;
+		samsung,dsim-config-hfp = <1>;
+
+		samsung,dsim-config-p = <3>;
+		samsung,dsim-config-m = <120>;
+		samsung,dsim-config-s = <1>;
+
+		samsung,dsim-config-pll-stable-time = <500>;
+		samsung,dsim-config-esc-clk = <20000000>;
+		samsung,dsim-config-stop-holding-cnt = <0x7ff>;
+		samsung,dsim-config-bta-timeout = <0xff>;
+		samsung,dsim-config-rx-timeout = <0xffff>;
+
+		samsung,dsim-device-id = <0xffffffff>;
+		samsung,dsim-device-bus-id = <0>;
+
+		samsung,dsim-device-reverse-panel = <1>;
 	};
 
 	i2c@13860000 {
@@ -36,192 +103,44 @@
 		status = "okay";
 
 		max77686_pmic@09 {
-			compatible = "maxim,max77686";
+			compatible = "maxim,max77686_pmic";
 			interrupts = <7 0>;
 			reg = <0x09 0 0>;
 			#clock-cells = <1>;
-
-			voltage-regulators {
-				ldo1_reg: LDO1 {
-					regulator-name = "VDD_ALIVE_1.0V";
-					regulator-min-microvolt = <1000000>;
-					regulator-max-microvolt = <1000000>;
-				};
-
-				ldo2_reg: LDO2 {
-					regulator-name = "VDDQ_VM1M2_1.2V";
-					regulator-min-microvolt = <1200000>;
-					regulator-max-microvolt = <1200000>;
-				};
-
-				ldo3_reg: LDO3 {
-					regulator-name = "VCC_1.8V_AP";
-					regulator-min-microvolt = <1800000>;
-					regulator-max-microvolt = <1800000>;
-				};
-
-				ldo4_reg: LDO4 {
-					regulator-name = "VDDQ_MMC2_2.8V";
-					regulator-min-microvolt = <2800000>;
-					regulator-max-microvolt = <2800000>;
-				};
-
-				ldo5_reg: LDO5 {
-					regulator-name = "VDDQ_MMC0/1/3_1.8V";
-					regulator-min-microvolt = <1800000>;
-					regulator-max-microvolt = <1800000>;
-				};
-
-				ldo6_reg: LDO6 {
-					regulator-name = "VMPLL_1.0V";
-					regulator-min-microvolt = <1100000>;
-					regulator-max-microvolt = <1100000>;
-				};
-
-				ldo7_reg: LDO7 {
-					regulator-name = "VPLL_1.1V";
-					regulator-min-microvolt = <1100000>;
-					regulator-max-microvolt = <1100000>;
-				};
-
-				ldo8_reg: LDO8 {
-					regulator-name = "VDD_MIPI/HDMI_1.0V";
-					regulator-min-microvolt = <1000000>;
-					regulator-max-microvolt = <1000000>;
-				};
-
-				ldo10_reg: LDO10 {
-					regulator-name = "VDD_MIPI/HDMI_1.8V";
-					regulator-min-microvolt = <1800000>;
-					regulator-max-microvolt = <1800000>;
-				};
-
-				ldo11_reg: LDO11 {
-					regulator-name = "VDD_ABB1_1.8V";
-					regulator-min-microvolt = <1800000>;
-					regulator-max-microvolt = <1800000>;
-				};
-
-				ldo12_reg: LDO12 {
-					regulator-name = "VDD_UOTG_3.0V";
-					regulator-min-microvolt = <3000000>;
-					regulator-max-microvolt = <3000000>;
-				};
-
-				ldo13_reg: LDO13 {
-					regulator-name = "VDD_C2C_1.8V";
-					regulator-min-microvolt = <1800000>;
-					regulator-max-microvolt = <1800000>;
-				};
-
-				ldo14_reg: LDO14 {
-					regulator-name = "VDD_ABB02_1.8V";
-					regulator-min-microvolt = <1800000>;
-					regulator-max-microvolt = <1800000>;
-				};
-
-				ldo15_reg: LDO15 {
-					regulator-name = "VDD_HSIC/OTG_1.0V";
-					regulator-min-microvolt = <1000000>;
-					regulator-max-microvolt = <1000000>;
-				};
-
-				ldo16_reg: LDO16 {
-					regulator-name = "VDD_HSIC_1.8V";
-					regulator-min-microvolt = <1800000>;
-					regulator-max-microvolt = <1800000>;
-				};
-
-				ldo17_reg: LDO17 {
-					regulator-name = "VDDQ_CAM_1.2V";
-					regulator-min-microvolt = <1200000>;
-					regulator-max-microvolt = <1200000>;
-				};
-
-				ldo20_reg: LDO20 {
-					regulator-name = "VDDQ_EMMC_1.8V";
-					regulator-min-microvolt = <1800000>;
-					regulator-max-microvolt = <1800000>;
-					regulator-always-on;
-					regulator-boot-on;
-				};
-
-				ldo21_reg: LDO21 {
-					regulator-name = "TFLASH_2.8V";
-					regulator-min-microvolt = <2800000>;
-					regulator-max-microvolt = <2800000>;
-					regulator-always-on;
-					regulator-boot-on;
-				};
-
-				ldo22_reg: LDO22 {
-					regulator-name = "VDDQ_EMMC_2.8V";
-					regulator-min-microvolt = <2800000>;
-					regulator-max-microvolt = <2800000>;
-					regulator-always-on;
-					regulator-boot-on;
-				};
-
-				ldo25_reg: LDO25 {
-					regulator-compatible = "LDO25";
-					regulator-name = "VDDQ_LCD_3.0V";
-					regulator-min-microvolt = <3000000>;
-					regulator-max-microvolt = <3000000>;
-				};
-
-				buck1_reg: BUCK1 {
-					regulator-name = "VDD_MIF_1.0V";
-					regulator-min-microvolt = <8500000>;
-					regulator-max-microvolt = <1100000>;
-				};
-
-				buck2_reg: BUCK2 {
-					regulator-name = "VDD_ARM_1.0V";
-					regulator-min-microvolt = <850000>;
-					regulator-max-microvolt = <1500000>;
-				};
-
-				buck3_reg: BUCK3 {
-					regulator-name = "VDD_INT_1.1V";
-					regulator-min-microvolt = <850000>;
-					regulator-max-microvolt = <1150000>;
-				};
-
-				buck4_reg: BUCK4 {
-					regulator-name = "VDD_G3D_1.0V";
-					regulator-min-microvolt = <850000>;
-					regulator-max-microvolt = <1150000>;
-				};
-
-				buck5_reg: BUCK5 {
-					regulator-name = "VDDQ_AP_1.2V";
-					regulator-min-microvolt = <1200000>;
-					regulator-max-microvolt = <1200000>;
-				};
-
-				buck6_reg: BUCK6 {
-					regulator-name = "VCC_INL1/7_1.35V";
-					regulator-min-microvolt = <1350000>;
-					regulator-max-microvolt = <1350000>;
-				};
-
-				buck7_reg: BUCK7 {
-					regulator-name = "VCC_INL2/3/5_2.0V";
-					regulator-min-microvolt = <2000000>;
-					regulator-max-microvolt = <2000000>;
-				};
-
-				buck8_reg: BUCK8 {
-					regulator-name = "VCC_P3V3_2.85V";
-					regulator-min-microvolt = <750000>;
-					regulator-max-microvolt = <3300000>;
-				};
-			};
 		};
 	};
 
-	serial@13810000 {
+	serial@13820000 {
 		status = "okay";
+	};
+
+	sdhci@12510000 {
+		status = "disabled";
+	};
+
+	sdhci@12520000 {
+		status = "disabled";
+	};
+
+	sdhci@12530000 {
+		samsung,bus-width = <4>;
+		/*samsung,timing = <1 2 3>;*/
+		/*cd-gpios = <&gpk2 2 0>;*/
+		status = "okay";
+	};
+
+	sdhci@12540000 {
+		status = "disabled";
+	};
+
+	dwmmc@12550000 {
+		samsung,bus-width = <4>;
+		samsung,timing = <2 1 0>;
+		samsung,removable = <0>;
+		fifoth_val = <0x203f0040>;
+		bus_hz = <400000000>;
+		div = <0x3>;
+		index = <4>;
 	};
 
 	ehci@12580000 {
@@ -239,22 +158,4 @@
 		compatible = "samsung,emmc-reset";
 		reset-gpio = <&gpk1 2 0>;
 	};
-};
-
-&sdhci2 {
-	samsung,bus-width = <4>;
-	samsung,timing = <1 2 3>;
-	cd-gpios = <&gpk2 2 0>;
-	status = "okay";
-};
-
-&mshc_0 {
-	samsung,bus-width = <8>;
-	samsung,timing = <2 1 0>;
-	samsung,removable = <0>;
-	fifoth_val = <0x203f0040>;
-	bus_hz = <400000000>;
-	div = <0x3>;
-	index = <4>;
-	status = "okay";
 };
