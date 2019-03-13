@@ -1,6 +1,6 @@
-ORIGEN BOARD
+ITOP4412 BOARD
 M:	Chander Kashyap <k.chander@samsung.com>
 S:	Maintained
-F:	board/samsung/origen/
-F:	include/configs/origen.h
-F:	configs/origen_defconfig
+F:	board/samsung/itop4412/
+F:	include/configs/itop4412.h
+F:	configs/itop4412_defconfig

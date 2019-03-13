@@ -15,8 +15,8 @@ always := $(hostprogs-y)
 #   warning: dereferencing type-punned pointer will break strict-aliasing rules
 #
 # TODO:
-# Fix the root cause in tools/mkorigenspl.c and delete the following work-around
-$(obj)/tools/mkorigenspl: HOSTCFLAGS:=$(filter-out -O2,$(HOSTCFLAGS))
+# Fix the root cause in tools/mkitop4412spl.c and delete the following work-around
+$(obj)/tools/mkitop4412spl: HOSTCFLAGS:=$(filter-out -O2,$(HOSTCFLAGS))
 else
 obj-y	+= itop4412.o
 endif

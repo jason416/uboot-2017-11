@@ -13,8 +13,8 @@
 #include <sys/stat.h>
 
 #define BUFSIZE			(16*1024)
-#define IMG_SIZE		(16*1024)
-#define SPL_HEADER_SIZE		16
+#define IMG_SIZE		(14*1024) //16*1024
+#define SPL_HEADER_SIZE		0 //16
 #define FILE_PERM		(S_IRUSR | S_IWUSR | S_IRGRP \
 				| S_IWGRP | S_IROTH | S_IWOTH)
 #define SPL_HEADER		"S5PC210 HEADER  "
@@ -79,7 +79,8 @@ int main(int argc, char **argv)
 
 		exit(EXIT_FAILURE);
 	}
-
+	
+#if 0
 	for (i = 0; i < IMG_SIZE - SPL_HEADER_SIZE; i++)
 		checksum += buffer[i+16];
 
@@ -88,6 +89,12 @@ int main(int argc, char **argv)
 
 	for (i = 1; i < SPL_HEADER_SIZE; i++)
 		buffer[i] ^= buffer[i-1];
+#endif
+
+	for (i = 0; i < IMG_SIZE - 4; i++)
+		checksum += (unsigned char)buffer[i];
+
+	*(unsigned int *)&buffer[i] = checksum;
 
 	if (write(ofd, buffer, BUFSIZE) != BUFSIZE) {
 		fprintf(stderr, "%s: Can't write %s: %s\n",
