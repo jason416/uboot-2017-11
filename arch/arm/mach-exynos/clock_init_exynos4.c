@@ -32,9 +32,9 @@
 #include "common_setup.h"
 
 #ifdef CONFIG_ITOP4412
-# include "itop4412_setup.h"
+#include "itop4412_setup.h"
 #else
-# include "exynos4_setup.h"
+#include "exynos4_setup.h"
 #endif
 /*
  * system_clock_init: Initialize core clock and bus clock.
