@@ -35,6 +35,9 @@
 /* #define MACH_TYPE_ITOP4412		0xffffffff */
 #define CONFIG_MACH_TYPE			MACH_TYPE_ITOP4412
 
+/* USB */
+#define CONFIG_USB_EHCI_EXYNOS
+
 /* select serial console configuration */
 #define CONFIG_SERIAL2
 
