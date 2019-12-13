@@ -9,6 +9,7 @@
 
 /dts-v1/;
 #include "exynos4412.dtsi"
+#include <dt-bindings/gpio/gpio.h>
 
 / {
 	model = "itop-4412 based on Exynos4412";
@@ -25,10 +26,11 @@
 		i2c7 = "/i2c@138d0000";
 		serial0 = "/serial@13820000";
 		console = "/serial@13820000";
-		mmc2 = "sdhci@12530000";
-		mmc4 = "dwmmc@12550000";
+		mmc0 = &mshc_0;    /* MMC */
+		mmc1 = &sdhci2;    /* TF card */
 	};
 
+#if 0
 	fimd@11c00000 {
 		compatible = "samsung,exynos-fimd";
 		reg = <0x11c00000 0xa4>;
@@ -95,6 +97,7 @@
 
 		samsung,dsim-device-reverse-panel = <1>;
 	};
+#endif
 
 	i2c@13860000 {
 		samsung,i2c-sda-delay = <100>;
@@ -107,44 +110,21 @@
 			interrupts = <7 0>;
 			reg = <0x09 0 0>;
 			#clock-cells = <1>;
+
+            /* TODO: need detail info? */
 		};
 	};
 
+    /* UART2 */
 	serial@13820000 {
 		status = "okay";
 	};
 
-	sdhci@12510000 {
-		status = "disabled";
-	};
-
-	sdhci@12520000 {
-		status = "disabled";
-	};
-
-	sdhci@12530000 {
-		samsung,bus-width = <4>;
-		/*samsung,timing = <1 2 3>;*/
-		/*cd-gpios = <&gpk2 2 0>;*/
-		status = "okay";
-	};
-
-	sdhci@12540000 {
-		status = "disabled";
-	};
-
-	dwmmc@12550000 {
-		samsung,bus-width = <4>;
-		samsung,timing = <2 1 0>;
-		samsung,removable = <0>;
-		fifoth_val = <0x203f0040>;
-		bus_hz = <400000000>;
-		div = <0x3>;
-		index = <4>;
-	};
-
+    /* USB 2.0 Host Controller */
 	ehci@12580000 {
 		compatible = "samsung,exynos-ehci";
+		/* In order to reset USB ethernet */
+		samsung,vbus-gpio = <&gpc0 1 GPIO_ACTIVE_HIGH>;
 		reg = <0x12580000 0x100>;
 		#address-cells = <1>;
 		#size-cells = <1>;
@@ -158,4 +138,24 @@
 		compatible = "samsung,emmc-reset";
 		reset-gpio = <&gpk1 2 0>;
 	};
+};
+
+/* TF card */
+&sdhci2 {
+    samsung,bus-width = <4>;
+    /* samsung,timing = <1 2 3>; */
+    /* cd-gpios = <&gpk2 2 0>; */
+    status = "okay";
+};
+
+/* EMMC */
+&mshc_0 {
+    samsung,bus-width = <8>;
+    samsung,timing = <2 1 0>;
+    samsung,removable = <0>;
+    fifoth_val = <0x203f0040>;
+    bus_hz = <400000000>;
+    div = <0x3>;
+    index = <4>;
+    status = "okay";
 };
