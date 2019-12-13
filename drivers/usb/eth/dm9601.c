@@ -623,8 +623,8 @@ U_BOOT_DRIVER(dm9601_eth) = {
     .id = UCLASS_ETH,
     .probe = dm9601_eth_probe,
     .ops = &dm9601_eth_ops,
-	.priv_auto_alloc_size = sizeof(struct dm9601_private),
-	.platdata_auto_alloc_size = sizeof(struct eth_pdata),
+    .priv_auto_alloc_size = sizeof(struct dm9601_private),
+    .platdata_auto_alloc_size = sizeof(struct eth_pdata),
 };
 
 static const struct usb_device_id dm9601_eth_id_table[] = {

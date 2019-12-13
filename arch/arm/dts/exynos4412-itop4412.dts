@@ -9,6 +9,7 @@
 
 /dts-v1/;
 #include "exynos4412.dtsi"
+#include <dt-bindings/gpio/gpio.h>
 
 / {
 	model = "itop-4412 based on Exynos4412";
@@ -122,6 +123,8 @@
     /* USB 2.0 Host Controller */
 	ehci@12580000 {
 		compatible = "samsung,exynos-ehci";
+		/* In order to reset USB ethernet */
+		samsung,vbus-gpio = <&gpc0 1 GPIO_ACTIVE_HIGH>;
 		reg = <0x12580000 0x100>;
 		#address-cells = <1>;
 		#size-cells = <1>;
