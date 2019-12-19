@@ -363,9 +363,8 @@ static int dm9601_init(struct ueth_data *dev)
 
 	debug("\n----> %s()\n", __func__);
 
-    mii_nway_restart(dev);
+    /* mii_nway_restart(dev); */
     /*dm_set_autoneg(dev);*/
-
     /* dm9601_link_reset(dev); */
 
 #define TIMEOUT_RESOLUTION 50   /* ms */
@@ -569,7 +568,6 @@ int dm9601_eth_send(struct udevice *udev, void *packet, int length)
     dump_msg(msg + 2, actual_len - 2);
 
     return err;
-    /* return dm9601_send(dev, packet, length); */
 }
 
 int dm9601_eth_recv(struct udevice *udev, int flags, uchar **packetp)
@@ -629,8 +627,9 @@ int dm9601_eth_recv(struct udevice *udev, int flags, uchar **packetp)
     }
 
     debug("---> packet_len = %d, len = %d\n", packet_len, len);
-    memcpy(pkt, ptr + 3, packet_len);
-    /* *packetp = ptr + sizeof(status) + sizeof(packet_len); */
+    memcpy(pkt, ptr + 3, packet_len);   /* 3 bytes header */
+
+    /* must return aligned memory */
     *packetp = pkt;
     return packet_len;
 
