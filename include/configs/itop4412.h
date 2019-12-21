@@ -75,7 +75,10 @@
 	"env import -t $loadaddr $filesize\0" \
     "loadbootscript=load mmc ${mmcdev} ${loadaddr} boot.scr\0" \
     "bootscript=echo Running bootscript from mmc${mmcdev} ...; " \
-    "source ${loadaddr}\0"
+    "source ${loadaddr}\0" \
+    "ethaddr=00:D8:1C:04:55:60\0" \
+    "ipaddr=192.168.1.141\0" \
+    "serverip=192.168.1.140\0"
 #define CONFIG_BOOTCOMMAND \
 	"if mmc rescan; then " \
 		"echo SD/MMC found on device ${mmcdev};" \

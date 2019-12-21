@@ -62,7 +62,7 @@ config USB_ETHER_SMSC95XX
 
 config USB_ETHER_DM9601
 	bool "DAVICOM DM9601 (USB 2.0) support"
-	depends on USB_HOST_ETHER
+	depends on USB_HOST_ETHER && DM_ETH
 	---help---
 	  Say Y here if you would like to support DAVICOM DM9601 based USB 2.0
 	  Ethernet Devices.
