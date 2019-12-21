@@ -8,6 +8,8 @@
  * kind, whether express or implied.
  */
 
+// #define DEBUG
+
 #include <common.h>
 #include <dm.h>
 #include <usb.h>
@@ -17,7 +19,6 @@
 #include <linux/mii.h>
 #include "usb_ether.h"
 
-// #define DEBUG
 #ifdef DEBUG
 #undef debug
 #define debug(fmt, args...) debug_cond(true, fmt, ##args)
@@ -494,6 +495,7 @@ static int dm9601_link_reset(struct usbnet *dev)
  */
 static void dump_msg(uint8_t *ptr, int len)
 {
+#ifdef DEBUG
     int i = 0, j = 0;
 
     debug("Dump:\n");
@@ -512,6 +514,7 @@ static void dump_msg(uint8_t *ptr, int len)
     if(j < i) {
         debug("\n");
     }
+#endif
 }
 
 
@@ -628,9 +631,15 @@ int dm9601_eth_recv(struct udevice *udev, int flags, uchar **packetp)
 
     debug("---> packet_len = %d, len = %d\n", packet_len, len);
     memcpy(pkt, ptr + 3, packet_len);   /* 3 bytes header */
+    memcpy(ptr, pkt, packet_len);       /* copy to dev->rxbuf */
 
-    /* must return aligned memory */
-    *packetp = pkt;
+    /*
+     * MUST RETURN ALIGNED MEMORY, because checksum use LDRH !!!
+     * DO NOT return `ptr` allocated by ALLOC_CACHE_ALIGN_BUFFER,
+     * which expand to an array on stack.
+     * Here ptr --> dev->rxbuf (not array on stack).
+     */
+    *packetp = ptr;
     return packet_len;
 
 err:
