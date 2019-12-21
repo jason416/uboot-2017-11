@@ -3,6 +3,9 @@
  *
  * Peter Korsgaard <jacmet@sunsite.dk>
  *
+ * revision:    2019-12-21, Jason416 <jason416@foxmail.com>
+ * Description: porting DM96xx driver to uboot DM_ETH module.
+ *
  * This file is licensed under the terms of the GNU General Public License
  * version 2.  This program is licensed "as is" without any warranty of any
  * kind, whether express or implied.
@@ -364,8 +367,7 @@ static int dm9601_init(struct ueth_data *dev)
 
 	debug("\n----> %s()\n", __func__);
 
-    /* mii_nway_restart(dev); */
-    /*dm_set_autoneg(dev);*/
+    /* dm_set_autoneg(dev); */
     /* dm9601_link_reset(dev); */
 
 #define TIMEOUT_RESOLUTION 50   /* ms */
