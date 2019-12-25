@@ -21,6 +21,7 @@
 #include <errno.h>
 #include <linux/mii.h>
 #include "usb_ether.h"
+#include <environment.h>
 
 #ifdef DEBUG
 #undef debug
@@ -405,6 +406,7 @@ static int dm9601_bind(struct udevice *udev)
 {
 	int ret = 0;
 	u8 mac[ETH_ALEN], id;
+	u8 env_enetaddr[ETH_ALEN];
 
     struct eth_pdata *pdata = dev_get_platdata(udev);
     struct dm9601_private *priv = dev_get_priv(udev);
@@ -414,30 +416,33 @@ static int dm9601_bind(struct udevice *udev)
 	dm_write_reg(dev, DM_NET_CTRL, 1);
 	udelay(20);
 
-	/* read MAC */
-	if (dm_read(dev, DM_PHY_ADDR, ETH_ALEN, mac) < 0) {
-		printf("Error reading MAC address\n");
-		ret = -ENODEV;
-		goto out;
-	}
+    /* set env addr */
+	eth_env_get_enetaddr_by_index("eth", udev->seq, env_enetaddr);
+	if (!is_zero_ethaddr(env_enetaddr)) {
+        dm9601_set_mac_address(dev, env_enetaddr);
+		memcpy(pdata->enetaddr, env_enetaddr, ETH_ALEN);
+    } else {
+        /* read MAC */
+        if (dm_read(dev, DM_PHY_ADDR, ETH_ALEN, mac) < 0) {
+            printf("Error reading MAC address\n");
+            ret = -ENODEV;
+            goto out;
+        }
 
-#if 1
-    const u8 mac_addr[6] = {0x00, 0xD8, 0x1C, 0x04, 0x55, 0x60};
-    debug("--->set mac addr!\n");
-    dm9601_set_mac_address(dev, (u8 *)mac_addr);
-    memcpy(mac, mac_addr, 6);
-#endif
+        /*
+         * Overwrite the auto-generated address only with good ones.
+         */
+        if (is_valid_ethaddr(mac))
+            memcpy(pdata->enetaddr, mac, ETH_ALEN);
+        else {
+            /* set a default mac */
+            const u8 mac_addr[ETH_ALEN] = {0x00, 0xD8, 0x1C, 0x04, 0x55, 0x60};
 
-	/*
-	 * Overwrite the auto-generated address only with good ones.
-	 */
-	if (is_valid_ethaddr(mac))
-		memcpy(pdata->enetaddr, mac, ETH_ALEN);
-	else {
-		printf("dm9601: No valid MAC address in EEPROM, using %pM\n", mac);
-		/* dm9601_set_mac_address(dev, mac); */
-	}
-
+            printf("dm9601: No valid MAC address in EEPROM, using %pM\n", mac);
+            dm9601_set_mac_address(dev, (u8 *)mac_addr);
+            memcpy(pdata->enetaddr, mac_addr, ETH_ALEN);
+        }
+    }
 
 	if (dm_read_reg(dev, DM_CHIP_ID, &id) < 0) {
 		printf("Error reading chip ID\n");
@@ -663,10 +668,10 @@ static int dm9601_free_pkt(struct udevice *udev, uchar *packet, int packet_len)
     return 0;
 }
 
-int dm9601_write_hwaddr(struct udevice *dev)
+int dm9601_write_hwaddr(struct udevice *udev)
 {
-    struct eth_pdata *pdata = dev_get_platdata(dev);
-    struct dm9601_private *priv = dev_get_priv(dev);
+    struct eth_pdata *pdata = dev_get_platdata(udev);
+    struct dm9601_private *priv = dev_get_priv(udev);
 
     debug("---->set mac addr <%02x:%02x:%02x:%02x:%02x:%02x>\n",
           pdata->enetaddr[0], pdata->enetaddr[1], pdata->enetaddr[2],

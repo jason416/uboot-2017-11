@@ -15,7 +15,7 @@
 #include <usb/dwc2_udc.h>
 #include <linux/printk.h>
 
-#define DEBUG
+// #define DEBUG
 #ifdef  DEBUG
 #undef  debug
 #define debug(fmt, args...) debug_cond(true, fmt, ##args)
