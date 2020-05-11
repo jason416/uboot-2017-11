@@ -22,9 +22,9 @@ fi
 echo "writting ..."
 
 if [ -z $1 ] ; then
-	dd iflag=dsync oflag=dsync if=u-boot-iTOP-4412.bin of=/dev/sdb seek=1
+	sudo dd iflag=dsync oflag=dsync if=u-boot-iTOP-4412.bin of=/dev/sdb seek=1
 else
-	dd iflag=dsync oflag=dsync if=u-boot-iTOP-4412.bin of=$1 seek=1
+	sudo dd iflag=dsync oflag=dsync if=u-boot-iTOP-4412.bin of=$1 seek=1
 fi
 
 echo "writting success"
