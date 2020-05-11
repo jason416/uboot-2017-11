@@ -7,7 +7,7 @@ then
 	make itop4412_defconfig
 fi
 
-make -j4 ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf-
+make -j$(nproc) ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf-
 
 cp u-boot.bin ./mkuboot/
 echo "copy u-boot.bin done."
