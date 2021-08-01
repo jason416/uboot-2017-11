@@ -48,8 +48,13 @@ int exynos_init(void)
     debug("---> ready to call board_gpio_init()!\n");
     board_gpio_init();
 
-    /* FIXME: should be not called in here */
-    board_usb_init(0, USB_INIT_DEVICE);
+    /* USB3503A Disconnect, Reset, Connect */
+    gpio_direction_output(EXYNOS4X12_GPIO_M33, 0);
+    gpio_direction_output(EXYNOS4X12_GPIO_M24, 0);
+    gpio_direction_output(EXYNOS4X12_GPIO_M24, 1);
+    gpio_direction_output(EXYNOS4X12_GPIO_M33, 1);
+
+    run_command("usb start",0);
 
 	return 0;
 }
@@ -90,16 +95,6 @@ struct dwc2_plat_otg_data s5pc210_otg_data = {
 
 int board_usb_init(int index, enum usb_init_type init)
 {
-#ifdef CONFIG_CMD_USB
-    debug("---> ready to init usb3503\n");
-
-    /* USB3503A Disconnect, Reset, Connect */
-    gpio_direction_output(EXYNOS4X12_GPIO_M33, 0);
-    gpio_direction_output(EXYNOS4X12_GPIO_M24, 0);
-    gpio_direction_output(EXYNOS4X12_GPIO_M24, 1);
-    gpio_direction_output(EXYNOS4X12_GPIO_M33, 1);
-
-#endif
     debug("USB_udc_probe\n");
 	return dwc2_udc_probe(&s5pc210_otg_data);
 }
